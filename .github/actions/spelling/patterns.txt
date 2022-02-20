@@ -1,0 +1,57 @@
+# See https://github.com/check-spelling/check-spelling/wiki/Configuration-Examples:-patterns
+
+# GitHub SHAs
+\bapi.github\.com/repos/[^/]+/[^/]+/[^/]+/[0-9a-f]+\b
+(?:\[[0-9a-f]+\]\(https:/|)/(?:www\.|)github\.com/[^/]+/[^/]+(?:/[^/]+/[0-9a-f]+(?:[-0-9a-zA-Z/#.]*|)\b|)
+\bgithub\.com/[^/]+/[^/]+[@#][0-9a-f]+\b
+# githubusercontent
+/[-a-z0-9]+\.githubusercontent\.com/[-a-zA-Z0-9?&=_\/.]*
+# gist github
+\bgist\.github\.com/[^/]+/[0-9a-f]+
+# git.io
+\bgit\.io/[0-9a-zA-Z]+
+# GitHub JSON
+"node_id": "[-a-zA-Z=;:/0-9+]*"
+# Contributor
+\[[^\]]+]\(https://github\.com/[^/]+\)
+# GHSA
+GHSA(?:-[0-9a-z]{4}){3}
+
+# Slack
+slack://[a-zA-Z0-9?&=]+
+\bslack\.com/[-0-9a-zA-Z/_~]*
+\bslack-edge\.com/[-a-zA-Z0-9?&=%./]+
+\bslack-imgs\.com/[-a-zA-Z0-9?&=%.]+
+
+# loom
+\bloom\.com/embed/[0-9a-f]+
+
+# hex digits including css/html color classes:
+(?:[\\0][xX]|\\u|[uU]\+|#x?|\%23)[0-9a-fA-FgGrR_]{2,}(?:[uU]?[lL]{0,2}|u\d+)\b
+
+# posthog secrets
+posthog\.init\((['"])phc_[^"',]+\g{-1},
+
+# kubectl - pods in CrashLoopBackOff
+\w+-[0-9a-f]+-\w+\s+\d+/\d+\s+CrashLoopBackOff\s+
+
+uid: [0-9a-f]+\b
+
+"byte": "[^"]+"
+
+\w+EAAAAAB\w+
+
+# Python stringprefix / binaryprefix
+\b(?:B|BR|Br|F|FR|Fr|R|RB|RF|Rb|Rf|U|UR|Ur|b|bR|br|f|fR|fr|r|rB|rF|rb|rf|u|uR|ur)'
+
+# acceptable duplicates
+\s(long|LONG) \g{-1}\s
+
+# ignore long runs of a single character:
+\b([A-Za-z])\g{-1}{3,}\b
+
+# version suffix <word>v#
+[Vv]\d+(?:\b|(?=[a-zA-Z_]))
+
+# Compiler flags
+[\t "'`=(]-[X]
