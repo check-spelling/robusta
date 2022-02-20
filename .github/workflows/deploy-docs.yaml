@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - 'docs/**'
+      - .github/workflows/deploy-docs.yaml
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROD_PROJECT }}
@@ -18,24 +19,30 @@ jobs:
 
     steps:
     - name: Checkout
+      if: ${{ env.PROJECT_ID }}
       uses: actions/checkout@v2
 
     - uses: google-github-actions/setup-gcloud@v0.2.0
+      if: ${{ env.PROJECT_ID }}
       with:
         service_account_key: ${{ secrets.GKE_PROD_SA_KEY }}
         project_id: ${{ secrets.GKE_PROD_PROJECT }}
         export_default_credentials: true
 
     # Configure Docker to use the gcloud command-line tool as a credential helper for authentication
-    - run: |-
+    - name: Configure Docker
+      if: ${{ env.PROJECT_ID }}
+      run: |-
         gcloud auth configure-docker us-central1-docker.pkg.dev
 
     - name: Set up Python
+      if: ${{ env.PROJECT_ID }}
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
 
     - name: Install dependencies
+      if: ${{ env.PROJECT_ID }}
       run: |
         sudo apt-get install graphviz pandoc
         python3 -m pip install --upgrade pip
@@ -45,15 +52,18 @@ jobs:
 
     # see https://stackoverflow.com/a/58034787/495995 for an explanation on ${GITHUB_REF##*/}
     - name: Update docs version
+      if: ${{ env.PROJECT_ID }}
       run: |
         echo "Setting DOCS_VERSION_PLACEHOLDER to ${GITHUB_REF##*/}"
         sed -i "s/DOCS_VERSION_PLACEHOLDER/${GITHUB_REF##*/}/g" docs/conf.py
         sed -i "s/DOCS_RELEASE_PLACEHOLDER/${GITHUB_REF##*/}/g" docs/conf.py
 
     - name: Build the docs
+      if: ${{ env.PROJECT_ID }}
       run: |
         cd docs
         poetry run make html
 
     - name: Upload docs to public gcp bucket
+      if: ${{ env.PROJECT_ID }}
       run: gsutil rsync -R ./docs/_build/html "gs://robusta-public/${GITHUB_REF##*/}/"
